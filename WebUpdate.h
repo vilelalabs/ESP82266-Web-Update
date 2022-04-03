@@ -23,8 +23,8 @@
 #include "acesso.h"
 
 #ifndef STASSID
-#define STASSID MINHA_REDE
-#define STAPSK SENHA_REDE
+#define STASSID "wifi_ssid"
+#define STAPSK "wifi_password"
 #endif
 
 const char* host = "esp8266-webupdate";
@@ -35,13 +35,13 @@ ESP8266WebServer httpServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
 
 /*
-*  @usage: 
-*   put this function in setup()
-*  @params:
-*   IP octets where the device will be found on local network
-*   separated by commas.  
-*   example: WebUpdateSetup(19,168,1,199);
-*/
+ *  @usage:
+ *   put this function in setup()
+ *  @params:
+ *   IP octets where the device will be found on local network
+ *   separated by commas.
+ *   example: WebUpdateSetup(19,168,1,199);
+ */
 
 void WebUpdateSetup(uint8_t first_octet,
                     uint8_t second_octet,
@@ -49,7 +49,7 @@ void WebUpdateSetup(uint8_t first_octet,
                     uint8_t fourth_octet) {
   Serial.begin(115200);
 
-  // 
+  //
   IPAddress ip(first_octet, second_octet, third_octet, fourth_octet);
   IPAddress gateway(first_octet, second_octet, third_octet, 1);
   IPAddress subnet(255, 255, 255, 0);
@@ -71,8 +71,8 @@ void WebUpdateSetup(uint8_t first_octet,
 
   httpUpdater.setup(&httpServer);
 
-  Serial.println("\nConnected to " + WiFi.SSID() + "\nIP address: " +
-                 WiFi.localIP().toString());
+  Serial.println("\nConnected to " + WiFi.SSID() +
+                 "\nIP address: " + WiFi.localIP().toString());
 
   httpServer.begin();
 
@@ -84,16 +84,16 @@ void WebUpdateSetup(uint8_t first_octet,
   // Root page on the web server
   httpServer.on("/", [first_octet, second_octet, third_octet, fourth_octet]() {
     httpServer.send(200, "text/plain",
-                    "Connected to ESP8266 at IP: " + (String)first_octet +
-                        "." + (String)second_octet + "." + (String)third_octet +
-                        "." + (String)fourth_octet);
+                    "Connected to ESP8266 at IP: " + (String)first_octet + "." +
+                        (String)second_octet + "." + (String)third_octet + "." +
+                        (String)fourth_octet);
   });
 }
 
 /*
-*  @usage:
-*   Put this function in loop()
-*/
+ *  @usage:
+ *   Put this function in loop()
+ */
 void WebUpdateLoop(void) {
   httpServer.handleClient();
   MDNS.update();
